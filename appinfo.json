@@ -1,0 +1,10 @@
+{
+    "vendor": "Vualto Ltd",
+    "largeIcon": "largeIcon.png",
+    "icon": "icon.png",
+    "main": "index.html",
+    "id": "com.vudrm.lg.shaka",
+    "title": "vudrm-lg-shaka",
+    "type": "web",
+    "version": "1.0.0"
+}

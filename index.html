@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<script src="webOSTVjs-1.2.0/webOSTV.js" charset="utf-8"></script>
+	<script src="webOSTVjs-1.2.0/webOSTV-dev.js" charset="utf-8"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/3.0.4/shaka-player.compiled.debug.min.js" integrity="sha512-l71aM4+eV+JrXkw8ZXQPftlnMSnM+aAZz2jZna6lUAHQBNnvAKElnqCrlaIRSgz3phijJfuAJQnqaza3G/6jow==" crossorigin="anonymous"></script>
+</head>
+<body>
+	<video id="video" width="100%" height="100%" controls autoplay></video>
+	<script>
+		const mpegDashUrl = "https://streaming.filmin.com/v2/6168004727001/dash/manifest.mpd";
+		const vudrmToken = "filmin|2020-09-21T12:24:22Z|kQI6t+b1Hc51CezemQ4qzw==|877901c13c56c3af10573cf5fb5293e722dc4535";
+
+		function onErrorEvent(event) {
+			onError(event.detail);
+		}
+
+		function onError(error) {
+			console.error('Error code', error.code, 'object', error);
+		}
+		
+		function initPlayer() {
+			const video = document.getElementById('video');
+			const player = new shaka.Player(video);
+		
+			player.addEventListener('error', onErrorEvent);
+			
+			player.getNetworkingEngine().registerRequestFilter(function(type, request) {
+				if (type == shaka.net.NetworkingEngine.RequestType.LICENSE) {
+					request.headers["x-vudrm-token"] = vudrmToken;
+				}
+			});
+			
+			player.configure({
+				drm: {
+					servers: { "com.microsoft.playready": "https://playready-license.vudrm.tech/rightsmanager.asmx"}
+				}
+			});
+			
+			try {
+				player.load(mpegDashUrl);
+			} catch (e) {
+				onError(e);
+			}
+		}
+		
+		shaka.polyfill.installAll();
+		if (shaka.Player.isBrowserSupported()) {
+			initPlayer();
+		} else {
+  			console.error('Browser not supported!');
+		}
+	</script>
+</body>
+</html>
