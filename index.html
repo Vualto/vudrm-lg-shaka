@@ -8,7 +8,10 @@
 <body>
 	<video id="video" width="100%" height="100%" controls autoplay></video>
 	<script>
+		// set the mpeg dash url
 		const mpegDashUrl = "";
+		
+		//set the vudrm token
 		const vudrmToken = "";
 
 		function onErrorEvent(event) {
@@ -31,6 +34,7 @@
 				}
 			});
 			
+			// PlayReady is recommended for LG Smart TVs but this demo has been successfully tested with Widevine on v4 of webOS.
 			player.configure({
 				drm: {
 					servers: { "com.microsoft.playready": "https://playready-license.vudrm.tech/rightsmanager.asmx"}
